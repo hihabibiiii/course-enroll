@@ -6,10 +6,11 @@ const navLinks = document.querySelector(".nav-links");
 const enrollModal = document.getElementById("enrollModal");
 const adminModal = document.getElementById("adminModal");
 const enrollmentForm = document.getElementById("enrollmentForm");
-const formView = document.querySelector(".modal-form-view");
-const successView = document.querySelector(".success-view");
 const adminMessage = document.getElementById("adminMessage");
 const confirmClear = document.getElementById("confirmClear");
+const redirectMessage = document.getElementById("redirectMessage");
+const submitEnrollment = document.getElementById("submitEnrollment");
+const ADMIN_WHATSAPP_NUMBER = "919839848517";
 
 // Navigation and scroll effects
 window.addEventListener("scroll", () => {
@@ -47,8 +48,9 @@ document.querySelectorAll(".reveal").forEach((element) => observer.observe(eleme
 function openEnrollmentModal() {
   enrollmentForm.reset();
   clearFormErrors();
-  formView.hidden = false;
-  successView.hidden = true;
+  redirectMessage.textContent = "";
+  submitEnrollment.disabled = false;
+  submitEnrollment.textContent = "Reserve My Seat →";
   openModal(enrollModal);
   document.getElementById("fullName").focus();
 }
@@ -96,9 +98,10 @@ document.addEventListener("keydown", (event) => {
   }
 });
 
-// Form validation and localStorage persistence
+// Form validation, demo persistence and WhatsApp redirect
 enrollmentForm.addEventListener("submit", (event) => {
   event.preventDefault();
+  redirectMessage.textContent = "";
 
   const formData = {
     id: window.crypto?.randomUUID ? window.crypto.randomUUID() : String(Date.now()),
@@ -119,16 +122,15 @@ enrollmentForm.addEventListener("submit", (event) => {
   const enrollments = getEnrollments();
   enrollments.push(formData);
   localStorage.setItem(STORAGE_KEY, JSON.stringify(enrollments));
-  console.log("CodeX enrollment submitted:", formData);
+  console.log("CodeX WhatsApp enrollment:", formData);
 
-  formView.hidden = true;
-  successView.hidden = false;
   renderAdminDashboard();
+  redirectToWhatsApp(formData);
 });
 
 function validateEnrollment(data) {
   const errors = {};
-  const mobilePattern = /^[6-9]\d{9}$/;
+  const mobilePattern = /^\d{10}$/;
   const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
   if (!data.name) {
@@ -148,6 +150,55 @@ function validateEnrollment(data) {
   }
 
   return errors;
+}
+
+function redirectToWhatsApp(data) {
+  const submittedAt = new Date(data.createdAt);
+  const date = submittedAt.toLocaleDateString("en-IN", {
+    day: "2-digit",
+    month: "long",
+    year: "numeric"
+  });
+  const time = submittedAt.toLocaleTimeString("en-IN", {
+    hour: "2-digit",
+    minute: "2-digit"
+  });
+  const message = [
+    "🎓 NEW CODEX ENROLLMENT",
+    "",
+    "👤 Student Details",
+    "━━━━━━━━━━━━━━━━",
+    `Name: ${data.name}`,
+    `Mobile: ${data.mobile}`,
+    `Email: ${data.email}`,
+    `Batch: ${data.batch}`,
+    "",
+    `📅 Enrollment Date: ${date}`,
+    `⏰ Time: ${time}`,
+    "",
+    "💰 Course: Full Stack Developer",
+    "💵 Fee: ₹2,900",
+    "",
+    "━━━━━━━━━━━━━━━━",
+    "🚀 CodeX Enrollment System"
+  ].join("\n");
+  const whatsappURL = `https://wa.me/${ADMIN_WHATSAPP_NUMBER}?text=${encodeURIComponent(message)}`;
+  const isMobile = /Android|iPhone|iPad|iPod|IEMobile|Opera Mini/i.test(navigator.userAgent);
+
+  submitEnrollment.disabled = true;
+  submitEnrollment.textContent = "Redirecting...";
+  redirectMessage.textContent = "Redirecting to WhatsApp...";
+
+  setTimeout(() => {
+    if (isMobile) {
+      window.location.href = whatsappURL;
+      return;
+    }
+
+    window.open(whatsappURL, "_blank");
+    submitEnrollment.disabled = false;
+    submitEnrollment.textContent = "Reserve My Seat →";
+  }, 500);
 }
 
 function showFormErrors(errors) {

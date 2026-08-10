@@ -757,26 +757,12 @@ select option {
   font-weight: 650;
 }
 
-.success-view {
-  text-align: center;
-  padding: 28px 0 4px;
-}
-
-.success-icon {
-  display: grid;
-  place-items: center;
-  width: 72px;
-  height: 72px;
-  margin: 0 auto 20px;
-  border-radius: 50%;
-  color: #022012;
-  background: var(--green);
-  font-size: 2rem;
-  font-weight: 900;
-}
-
-.success-view p {
-  color: var(--muted);
+.redirect-message {
+  min-height: 22px;
+  margin: 0;
+  color: #c9ffe5;
+  font-size: 0.92rem;
+  font-weight: 750;
 }
 
 .admin-panel {
