@@ -10,7 +10,7 @@ const adminMessage = document.getElementById("adminMessage");
 const confirmClear = document.getElementById("confirmClear");
 const redirectMessage = document.getElementById("redirectMessage");
 const submitEnrollment = document.getElementById("submitEnrollment");
-const ADMIN_WHATSAPP_NUMBER = "919839848517";
+const ADMIN_WHATSAPP_NUMBER = "917068615386";
 
 // Navigation and scroll effects
 window.addEventListener("scroll", () => {
