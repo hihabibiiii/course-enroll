@@ -164,7 +164,7 @@ function redirectToWhatsApp(data) {
     minute: "2-digit"
   });
   const message = [
-    "🎓 NEW CODEX ENROLLMENT",
+    "🎓 NEW FULL STACK DEVELOPER ENROLLMENT",
     "",
     "👤 Student Details",
     "━━━━━━━━━━━━━━━━",
